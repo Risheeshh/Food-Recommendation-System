@@ -2,6 +2,7 @@ from shared_functions import *
 
 # Global variable to store loaded food items
 food_items = []
+search_history = []
 
 def main():
     """Main function for interactive CLI food recommendation system"""
@@ -12,6 +13,7 @@ def main():
         
         # Load food data from file
         global food_items
+        global search_history
         food_items = load_food_data('./FoodDataSet.json')
         print(f"✅ Loaded {len(food_items)} food items successfully")
         
@@ -60,6 +62,9 @@ def interactive_food_chatbot(collection):
             elif user_input.lower() in ['help', 'h']:
                 show_help_menu()
             
+            elif user_input.lower() in ['history']:
+                handle_history_command()
+            
             # Handle food search
             else:
                 handle_food_search(collection, user_input)
@@ -84,9 +89,9 @@ def show_help_menu():
     print("  • 'help' - Show this help menu")
     print("  • 'quit' - Exit the system")
 
-
 def handle_food_search(collection, query):
     """Handle food similarity search with enhanced display"""
+    search_history.append(query)
     print(f"\n🔍 Searching for '{query}'...")
     print("   Please wait...")
     
@@ -96,9 +101,9 @@ def handle_food_search(collection, query):
     if not results:
         print("❌ No matching foods found.")
         print("💡 Try different keywords like:")
-        print("   • Cuisine types: 'Italian', 'American'")
-        print("   • Ingredients: 'chocolate', 'flour', 'cheese'")
-        print("   • Descriptors: 'sweet', 'baked', 'dessert'")
+        print("   • Cuisine types: 'Italian', 'Thai', 'Mexican'")
+        print("   • Ingredients: 'chicken', 'vegetables', 'cheese'")
+        print("   • Descriptors: 'spicy', 'sweet', 'healthy'")
         return
     
     # Display results with rich formatting
@@ -143,6 +148,16 @@ def suggest_related_searches(results):
     else:
         print("   • Try 'hearty meal' for more substantial dishes")
 
+def handle_history_command():
+    """Display user's search history"""
+    if not search_history:
+        print("📝 No search history available")
+        return
+    
+    print("\n📝 Your Search History:")
+    print("-" * 30)
+    for i, search in enumerate(search_history[-10:], 1):  # Show last 10
+        print(f"{i}. {search}")
 
 if __name__ == "__main__":
     main()
